@@ -1,0 +1,62 @@
+version: '3.8'
+services:
+  auth-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: authdb
+      POSTGRES_USER: auth
+      POSTGRES_PASSWORD: auth
+    volumes:
+      - auth_db_data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+
+  core-db:
+    image: postgres:15
+    environment:
+      POSTGRES_DB: coredb
+      POSTGRES_USER: core
+      POSTGRES_PASSWORD: core
+    volumes:
+      - core_db_data:/var/lib/postgresql/data
+    ports:
+      - "5434:5432"
+
+  auth-service:
+    build: ./auth-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://auth-db:5432/authdb
+      SPRING_DATASOURCE_USERNAME: auth
+      SPRING_DATASOURCE_PASSWORD: auth
+      SERVER_PORT: 8081
+    depends_on:
+      - auth-db
+    ports:
+      - "8081:8081"
+
+  core-service:
+    build: ./core-service
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://core-db:5432/coredb
+      SPRING_DATASOURCE_USERNAME: core
+      SPRING_DATASOURCE_PASSWORD: core
+      AUTH_SERVICE_URL: http://auth-service:8081
+      RISK_SERVICE_URL: http://risk-service:8083
+      SERVER_PORT: 8082
+    depends_on:
+      - core-db
+      - auth-service
+      - risk-service
+    ports:
+      - "8082:8082"
+
+  risk-service:
+    build: ./risk-service
+    environment:
+      SERVER_PORT: 8083
+    ports:
+      - "8083:8083"
+
+volumes:
+  auth_db_data:
+  core_db_data:
