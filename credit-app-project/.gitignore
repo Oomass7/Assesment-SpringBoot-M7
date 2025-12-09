@@ -28,6 +28,17 @@ buildNumber.properties
 .mvn/timing.properties
 .mvn/wrapper/maven-wrapper.jar
 
+# Maven Test Reports (NO subir - se generan automáticamente)
+**/target/surefire-reports/
+**/target/failsafe-reports/
+**/target/test-classes/
+**/target/classes/
+
+# JaCoCo Coverage Reports (NO subir)
+**/target/site/jacoco/
+**/target/jacoco.exec
+*.exec
+
 # Gradle
 .gradle/
 build/
@@ -283,3 +294,30 @@ replay_pid*
 !SUMMARY.md
 !QUICK-START.md
 !FRONTEND-GUIDE.md
+!TESTING-GUIDE.md
+!COMO-EJECUTAR-TESTS.md
+!CLEANUP-REPORT.md
+
+# ===================================
+# TESTING
+# ===================================
+
+# ✅ SÍ SUBIR: Archivos de código de tests
+# Los archivos .java en src/test/ SÍ deben subirse
+# !**/src/test/**/*.java  (ya incluidos por defecto)
+
+# ❌ NO SUBIR: Reportes y archivos generados por tests
+**/target/surefire-reports/**
+**/target/failsafe-reports/**
+**/target/site/**
+**/*.log
+**/*.exec
+**/jacoco.xml
+**/TEST-*.xml
+**/TEST-*.txt
+
+# ✅ SÍ SUBIR: Configuraciones de test
+!**/src/test/resources/application-test.properties
+!**/src/test/resources/application-test.yml
+!**/src/test/resources/*.xml
+
