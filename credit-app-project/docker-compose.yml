@@ -58,5 +58,16 @@ services:
     ports:
       - "8082:8082"
 
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - auth-service
+      - core-service
+      - risk-service
+    environment:
+      - NODE_ENV=production
+
 volumes:
   postgres_data:

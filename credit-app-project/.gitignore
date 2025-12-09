@@ -1,0 +1,285 @@
+# ===================================
+# GITIGNORE - Sistema de Créditos
+# Proyecto Spring Boot + Microservicios
+# ===================================
+
+# ===================================
+# JAVA / MAVEN / GRADLE
+# ===================================
+
+# Compiled class files
+*.class
+*.jar
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# Maven
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+# Gradle
+.gradle/
+build/
+!gradle/wrapper/gradle-wrapper.jar
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+# ===================================
+# SPRING BOOT
+# ===================================
+
+# Spring Boot specific
+spring-boot-*.jar
+!**/src/main/**
+!**/src/test/**
+
+# ===================================
+# IDE - IntelliJ IDEA
+# ===================================
+
+.idea/
+*.iws
+*.iml
+*.ipr
+out/
+.idea_modules/
+
+# ===================================
+# IDE - Eclipse
+# ===================================
+
+.classpath
+.project
+.settings/
+bin/
+.metadata
+tmp/
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.recommenders
+
+# ===================================
+# IDE - Visual Studio Code
+# ===================================
+
+.vscode/
+.code-workspace
+*.code-workspace
+
+# ===================================
+# IDE - NetBeans
+# ===================================
+
+nbproject/private/
+nbbuild/
+dist/
+nbdist/
+.nb-gradle/
+
+# ===================================
+# NODE.JS / NPM (Frontend)
+# ===================================
+
+# Dependencies
+node_modules/
+jspm_packages/
+
+# Production build
+/frontend/dist/
+/frontend/build/
+
+# npm / yarn
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+.pnpm-debug.log*
+
+# Package managers
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Parcel cache
+.cache
+.parcel-cache
+
+# Vite
+.vite/
+
+# ===================================
+# DOCKER
+# ===================================
+
+# Docker volumes
+docker-compose.override.yml
+.dockerignore
+
+# ===================================
+# DATABASE
+# ===================================
+
+# H2 Database
+*.h2.db
+*.trace.db
+
+# PostgreSQL
+*.sql.backup
+*.dump
+
+# ===================================
+# LOGS
+# ===================================
+
+# Log files
+*.log
+logs/
+log/
+*.log.*
+
+# Spring Boot logs
+spring.log
+
+# ===================================
+# OPERATING SYSTEM
+# ===================================
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Windows
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.fuse_hidden*
+.directory
+.Trash-*
+.nfs*
+
+# ===================================
+# TEMPORARY FILES
+# ===================================
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+
+# Temp directories
+temp/
+tmp/
+cache/
+
+# ===================================
+# SECURITY & SECRETS
+# ===================================
+
+# Credentials & API Keys
+*.key
+*.pem
+*.p12
+*.pfx
+secrets/
+credentials/
+
+# Application secrets
+application-local.properties
+application-dev.properties
+application-secret.properties
+
+# ===================================
+# TEST & COVERAGE
+# ===================================
+
+# JUnit / Test results
+TEST-*.xml
+test-results/
+junit/
+
+# Coverage reports
+coverage/
+*.lcov
+.nyc_output/
+htmlcov/
+.coverage
+.coverage.*
+
+# JaCoCo
+jacoco.exec
+jacoco/
+
+# ===================================
+# BUILD TOOLS
+# ===================================
+
+# SonarQube
+.sonar/
+.scannerwork/
+
+# ===================================
+# MISC
+# ===================================
+
+# Archives
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# Virtual Machine crash logs
+hs_err_pid*
+replay_pid*
+
+# ===================================
+# PROJECT SPECIFIC
+# ===================================
+
+# Exclude specific build artifacts
+**/target/
+**/out/
+**/build/
+
+# Keep certain files
+!.gitignore
+!README.md
+!ARCHITECTURE.md
+!TESTING.md
+!SUMMARY.md
+!QUICK-START.md
+!FRONTEND-GUIDE.md
