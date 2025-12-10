@@ -3,24 +3,27 @@ package com.example.coreservice.domain.model;
 import java.time.LocalDateTime;
 
 /**
- * Entidad de dominio Solicitud de Crédito
+ * Domain entity Credit Request
  */
 public class CreditRequest {
     private Long id;
+    private Long affiliateId;
     private String clientDocument;
     private String clientName;
     private Double requestedAmount;
     private Integer termMonths;
-    private String status; // PENDIENTE, APROBADA, RECHAZADA
+    private Double proposedRate; // Annual interest rate
+    private String status; // PENDING, APPROVED, REJECTED
     private Integer riskScore;
-    private String riskLevel; // BAJO, MEDIO, ALTO
+    private String riskLevel; // LOW, MEDIUM, HIGH
     private LocalDateTime requestDate;
     private LocalDateTime evaluationDate;
+    private String rejectionReason;
 
     // Constructor
     public CreditRequest() {
         this.requestDate = LocalDateTime.now();
-        this.status = "PENDIENTE";
+        this.status = "PENDING";
     }
 
     public CreditRequest(String clientDocument, String clientName, Double requestedAmount, Integer termMonths) {
@@ -31,44 +34,77 @@ public class CreditRequest {
         this.termMonths = termMonths;
     }
 
-    // Métodos de negocio
+    public CreditRequest(String clientDocument, String clientName, Double requestedAmount, Integer termMonths,
+            Double proposedRate) {
+        this(clientDocument, clientName, requestedAmount, termMonths);
+        this.proposedRate = proposedRate;
+    }
+
+    // Business methods
     public boolean isValid() {
         return clientDocument != null && !clientDocument.isEmpty()
-            && clientName != null && !clientName.isEmpty()
-            && requestedAmount != null && requestedAmount > 0
-            && termMonths != null && termMonths > 0;
+                && clientName != null && !clientName.isEmpty()
+                && requestedAmount != null && requestedAmount > 0
+                && termMonths != null && termMonths > 0;
     }
 
     public void approve() {
-        this.status = "APROBADA";
+        this.status = "APPROVED";
+        this.evaluationDate = LocalDateTime.now();
+    }
+
+    public void reject(String reason) {
+        this.status = "REJECTED";
+        this.rejectionReason = reason;
         this.evaluationDate = LocalDateTime.now();
     }
 
     public void reject() {
-        this.status = "RECHAZADA";
-        this.evaluationDate = LocalDateTime.now();
+        reject("Risk level too high");
     }
 
     public void assignRiskEvaluation(Integer score, String level) {
         this.riskScore = score;
         this.riskLevel = level;
-        
-        // Lógica de aprobación automática
-        if ("BAJO".equals(level)) {
+
+        // Automatic approval logic
+        if ("LOW".equals(level) || "BAJO".equals(level)) {
             approve();
-        } else if ("ALTO".equals(level)) {
-            reject();
+        } else if ("HIGH".equals(level) || "ALTO".equals(level)) {
+            reject("High risk level");
         }
-        // MEDIO requiere revisión manual
+        // MEDIUM requires manual review
     }
 
-    // Getters y Setters
+    /**
+     * Calculate monthly payment
+     */
+    public Double calculateMonthlyPayment() {
+        if (requestedAmount == null || termMonths == null || termMonths <= 0)
+            return 0.0;
+        double rate = proposedRate != null ? proposedRate : 0.12; // Default 12% annual
+        double monthlyRate = rate / 12;
+        if (monthlyRate == 0)
+            return requestedAmount / termMonths;
+        return requestedAmount * (monthlyRate * Math.pow(1 + monthlyRate, termMonths))
+                / (Math.pow(1 + monthlyRate, termMonths) - 1);
+    }
+
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAffiliateId() {
+        return affiliateId;
+    }
+
+    public void setAffiliateId(Long affiliateId) {
+        this.affiliateId = affiliateId;
     }
 
     public String getClientDocument() {
@@ -101,6 +137,14 @@ public class CreditRequest {
 
     public void setTermMonths(Integer termMonths) {
         this.termMonths = termMonths;
+    }
+
+    public Double getProposedRate() {
+        return proposedRate;
+    }
+
+    public void setProposedRate(Double proposedRate) {
+        this.proposedRate = proposedRate;
     }
 
     public String getStatus() {
@@ -141,5 +185,13 @@ public class CreditRequest {
 
     public void setEvaluationDate(LocalDateTime evaluationDate) {
         this.evaluationDate = evaluationDate;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }

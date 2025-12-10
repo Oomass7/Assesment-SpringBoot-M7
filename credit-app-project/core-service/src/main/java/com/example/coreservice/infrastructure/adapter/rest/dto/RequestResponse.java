@@ -3,31 +3,43 @@ package com.example.coreservice.infrastructure.adapter.rest.dto;
 import java.time.LocalDateTime;
 
 /**
- * DTO para respuesta de request
+ * DTO for credit request response
  */
 public class RequestResponse {
     private Long id;
+    private Long affiliateId;
     private String clientDocument;
     private String clientName;
     private Double requestedAmount;
     private Integer termMonths;
+    private Double proposedRate;
     private String status;
     private Integer riskScore;
     private String riskLevel;
     private LocalDateTime requestDate;
     private LocalDateTime evaluationDate;
+    private String rejectionReason;
+    private Double monthlyPayment;
 
-    // Constructores
+    // Constructors
     public RequestResponse() {
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAffiliateId() {
+        return affiliateId;
+    }
+
+    public void setAffiliateId(Long affiliateId) {
+        this.affiliateId = affiliateId;
     }
 
     public String getClientDocument() {
@@ -60,6 +72,14 @@ public class RequestResponse {
 
     public void setTermMonths(Integer termMonths) {
         this.termMonths = termMonths;
+    }
+
+    public Double getProposedRate() {
+        return proposedRate;
+    }
+
+    public void setProposedRate(Double proposedRate) {
+        this.proposedRate = proposedRate;
     }
 
     public String getStatus() {
@@ -100,5 +120,21 @@ public class RequestResponse {
 
     public void setEvaluationDate(LocalDateTime evaluationDate) {
         this.evaluationDate = evaluationDate;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
+    }
+
+    public Double getMonthlyPayment() {
+        return monthlyPayment;
+    }
+
+    public void setMonthlyPayment(Double monthlyPayment) {
+        this.monthlyPayment = monthlyPayment;
     }
 }

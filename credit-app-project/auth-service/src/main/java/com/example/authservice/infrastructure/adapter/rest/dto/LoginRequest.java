@@ -1,13 +1,21 @@
 package com.example.authservice.infrastructure.adapter.rest.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+
 /**
- * DTO para request de login
+ * DTO for login request with validation
  */
 public class LoginRequest {
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+
+    @NotBlank(message = "Password is required")
     private String password;
 
-    // Constructores
+    // Constructors
     public LoginRequest() {
     }
 
@@ -16,7 +24,7 @@ public class LoginRequest {
         this.password = password;
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public String getEmail() {
         return email;
     }

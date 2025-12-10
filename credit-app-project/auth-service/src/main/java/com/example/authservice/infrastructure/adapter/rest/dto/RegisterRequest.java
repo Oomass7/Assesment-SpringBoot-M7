@@ -1,12 +1,30 @@
 package com.example.authservice.infrastructure.adapter.rest.dto;
 
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
+
 /**
- * DTO for registration request
+ * DTO for registration request with validation
  */
 public class RegisterRequest {
+
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email must be valid")
     private String email;
+
+    @NotBlank(message = "Password is required")
+    @Size(min = 8, max = 100, message = "Password must be between 8 and 100 characters")
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d).*$", message = "Password must contain at least one uppercase, one lowercase, and one digit")
     private String password;
+
+    @NotBlank(message = "Name is required")
+    @Size(min = 2, max = 255, message = "Name must be between 2 and 255 characters")
     private String name;
+
+    @NotBlank(message = "Role is required")
+    @Pattern(regexp = "^(AFILIADO|ANALISTA|ADMIN)$", message = "Role must be AFILIADO, ANALISTA, or ADMIN")
     private String role;
 
     // Constructors

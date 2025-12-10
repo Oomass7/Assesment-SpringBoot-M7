@@ -4,56 +4,85 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 /**
- * Entidad JPA para Solicitud
+ * JPA Entity for Credit Request
  */
 @Entity
-@Table(name = "requestes")
+@Table(name = "requests")
 public class RequestEntity {
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
-    @Column(name = "documento_cliente", nullable = false)
+
+    @Column(name = "affiliate_id")
+    private Long affiliateId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "affiliate_id", insertable = false, updatable = false)
+    private AffiliateEntity affiliate;
+
+    @Column(name = "client_document", nullable = false)
     private String clientDocument;
-    
-    @Column(name = "nombre_cliente", nullable = false)
+
+    @Column(name = "client_name", nullable = false)
     private String clientName;
-    
-    @Column(name = "monto_solicitado", nullable = false)
+
+    @Column(name = "requested_amount", nullable = false)
     private Double requestedAmount;
-    
-    @Column(name = "plazo_meses", nullable = false)
+
+    @Column(name = "term_months", nullable = false)
     private Integer termMonths;
-    
+
+    @Column(name = "proposed_rate")
+    private Double proposedRate;
+
     @Column(nullable = false)
     private String status;
-    
-    @Column(name = "score_riesgo")
+
+    @Column(name = "risk_score")
     private Integer riskScore;
-    
-    @Column(name = "nivel_riesgo")
+
+    @Column(name = "risk_level")
     private String riskLevel;
-    
-    @Column(name = "fecha_request", nullable = false)
+
+    @Column(name = "request_date", nullable = false)
     private LocalDateTime requestDate;
-    
-    @Column(name = "fecha_evaluation")
+
+    @Column(name = "evaluation_date")
     private LocalDateTime evaluationDate;
 
-    // Constructor por defecto
+    @Column(name = "rejection_reason")
+    private String rejectionReason;
+
+    // Default constructor
     public RequestEntity() {
         this.requestDate = LocalDateTime.now();
-        this.status = "PENDIENTE";
+        this.status = "PENDING";
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getAffiliateId() {
+        return affiliateId;
+    }
+
+    public void setAffiliateId(Long affiliateId) {
+        this.affiliateId = affiliateId;
+    }
+
+    public AffiliateEntity getAffiliate() {
+        return affiliate;
+    }
+
+    public void setAffiliate(AffiliateEntity affiliate) {
+        this.affiliate = affiliate;
     }
 
     public String getClientDocument() {
@@ -86,6 +115,14 @@ public class RequestEntity {
 
     public void setTermMonths(Integer termMonths) {
         this.termMonths = termMonths;
+    }
+
+    public Double getProposedRate() {
+        return proposedRate;
+    }
+
+    public void setProposedRate(Double proposedRate) {
+        this.proposedRate = proposedRate;
     }
 
     public String getStatus() {
@@ -126,5 +163,13 @@ public class RequestEntity {
 
     public void setEvaluationDate(LocalDateTime evaluationDate) {
         this.evaluationDate = evaluationDate;
+    }
+
+    public String getRejectionReason() {
+        return rejectionReason;
+    }
+
+    public void setRejectionReason(String rejectionReason) {
+        this.rejectionReason = rejectionReason;
     }
 }
