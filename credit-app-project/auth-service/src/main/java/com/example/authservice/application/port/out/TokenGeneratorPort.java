@@ -1,12 +1,12 @@
 package com.example.authservice.application.port.out;
 
 import com.example.authservice.domain.model.TokenAuth;
-import com.example.authservice.domain.model.Usuario;
+import com.example.authservice.domain.model.User;
 
 /**
- * Puerto de salida - Interfaz para generación de tokens
+ * Output port - Interface for token generation
  */
 public interface TokenGeneratorPort {
-    TokenAuth generar(Usuario usuario);
-    boolean validar(String token);
+    TokenAuth generate(User user);
+    boolean validate(String token);
 }

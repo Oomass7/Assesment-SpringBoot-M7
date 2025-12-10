@@ -1,9 +1,9 @@
 package com.example.riskservice.infrastructure.adapter.rest;
 
-import com.example.riskservice.application.port.in.EvaluarRiesgoUseCase;
-import com.example.riskservice.domain.model.Evaluacion;
-import com.example.riskservice.infrastructure.adapter.rest.dto.EvaluacionRequest;
-import com.example.riskservice.infrastructure.adapter.rest.dto.EvaluacionResponse;
+import com.example.riskservice.application.port.in.EvaluateRiskUseCase;
+import com.example.riskservice.domain.model.Evaluation;
+import com.example.riskservice.infrastructure.adapter.rest.dto.EvaluationRequest;
+import com.example.riskservice.infrastructure.adapter.rest.dto.EvaluationResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 public class RiskRestController {
 
-    private final EvaluarRiesgoUseCase evaluarRiesgoUseCase;
+    private final EvaluateRiskUseCase evaluarRiesgoUseCase;
 
-    public RiskRestController(EvaluarRiesgoUseCase evaluarRiesgoUseCase) {
+    public RiskRestController(EvaluateRiskUseCase evaluarRiesgoUseCase) {
         this.evaluarRiesgoUseCase = evaluarRiesgoUseCase;
     }
 
     @PostMapping("/evaluate")
-    public ResponseEntity<EvaluacionResponse> evaluar(@RequestBody EvaluacionRequest request) {
+    public ResponseEntity<EvaluationResponse> evaluate(@RequestBody EvaluationRequest request) {
         // Ejecutar caso de uso
-        Evaluacion evaluacion = evaluarRiesgoUseCase.evaluar(
-            request.getDocumento(),
-            request.getMonto(),
-            request.getPlazo()
+        Evaluation evaluation = evaluarRiesgoUseCase.evaluate(
+            request.getClientDocument(),
+            request.getRequestedAmount(),
+            request.getTermMonths()
         );
 
         // Convertir a DTO de respuesta
-        EvaluacionResponse response = new EvaluacionResponse(
-            evaluacion.getDocumento(),
-            evaluacion.getScore(),
-            evaluacion.getNivelRiesgo()
+        EvaluationResponse response = new EvaluationResponse(
+            evaluation.getClientDocument(),
+            evaluation.getScore(),
+            evaluation.getRiskLevel()
         );
 
         return ResponseEntity.ok(response);

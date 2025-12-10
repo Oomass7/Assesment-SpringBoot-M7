@@ -1,43 +1,43 @@
 package com.example.riskservice.application.service;
 
-import com.example.riskservice.application.port.in.EvaluarRiesgoUseCase;
-import com.example.riskservice.application.port.out.EvaluacionRepositoryPort;
-import com.example.riskservice.domain.model.Evaluacion;
+import com.example.riskservice.application.port.in.EvaluateRiskUseCase;
+import com.example.riskservice.application.port.out.EvaluationRepositoryPort;
+import com.example.riskservice.domain.model.Evaluation;
 import org.springframework.stereotype.Service;
 
 /**
  * Servicio de aplicación para evaluación de riesgo
  */
 @Service
-public class RiskService implements EvaluarRiesgoUseCase {
+public class RiskService implements EvaluateRiskUseCase {
 
-    private final EvaluacionRepositoryPort evaluacionRepository;
+    private final EvaluationRepositoryPort evaluationRepository;
 
-    public RiskService(EvaluacionRepositoryPort evaluacionRepository) {
-        this.evaluacionRepository = evaluacionRepository;
+    public RiskService(EvaluationRepositoryPort evaluationRepository) {
+        this.evaluationRepository = evaluationRepository;
     }
 
     @Override
-    public Evaluacion evaluar(String documento, Double monto, Integer plazo) {
+    public Evaluation evaluate(String document, Double amount, Integer term) {
         // Validar entrada
-        if (documento == null || documento.isEmpty()) {
-            throw new IllegalArgumentException("El documento es requerido");
+        if (document == null || document.isEmpty()) {
+            throw new IllegalArgumentException("Document is required");
         }
 
         // Crear evaluación
-        Evaluacion evaluacion = new Evaluacion(documento, monto, plazo);
+        Evaluation evaluation = new Evaluation(document, amount, term);
         
         // Validar
-        if (!evaluacion.esValida()) {
+        if (!evaluation.isValid()) {
             throw new IllegalArgumentException("Datos de evaluación inválidos");
         }
 
         // Calcular riesgo (lógica de negocio)
-        evaluacion.calcularRiesgo();
+        evaluation.calculateRisk();
 
         // Guardar historial de evaluación
-        evaluacionRepository.guardar(evaluacion);
+        evaluationRepository.save(evaluation);
 
-        return evaluacion;
+        return evaluation;
     }
 }

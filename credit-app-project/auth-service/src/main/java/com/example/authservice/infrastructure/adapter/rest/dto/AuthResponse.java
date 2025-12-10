@@ -1,24 +1,24 @@
 package com.example.authservice.infrastructure.adapter.rest.dto;
 
 /**
- * DTO para respuesta de autenticación
+ * DTO for authentication response
  */
 public class AuthResponse {
     private String token;
-    private String tipo;
-    private String mensaje;
+    private String type;
+    private String message;
 
-    // Constructores
+    // Constructors
     public AuthResponse() {
     }
 
-    public AuthResponse(String token, String tipo, String mensaje) {
+    public AuthResponse(String token, String type, String message) {
         this.token = token;
-        this.tipo = tipo;
-        this.mensaje = mensaje;
+        this.type = type;
+        this.message = message;
     }
 
-    // Getters y Setters
+    // Getters and Setters
     public String getToken() {
         return token;
     }
@@ -27,19 +27,19 @@ public class AuthResponse {
         this.token = token;
     }
 
-    public String getTipo() {
-        return tipo;
+    public String getType() {
+        return type;
     }
 
-    public void setTipo(String tipo) {
-        this.tipo = tipo;
+    public void setType(String type) {
+        this.type = type;
     }
 
-    public String getMensaje() {
-        return mensaje;
+    public String getMessage() {
+        return message;
     }
 
-    public void setMensaje(String mensaje) {
-        this.mensaje = mensaje;
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

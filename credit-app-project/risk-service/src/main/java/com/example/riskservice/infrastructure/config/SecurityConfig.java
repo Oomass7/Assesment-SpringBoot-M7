@@ -32,9 +32,10 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/actuator/**",
-                                "/error"
+                                "/error",
+                                "/evaluate" // Permitir llamadas internas desde otros microservicios
                         ).permitAll()
-                        // Todos los endpoints de evaluación requieren autenticación
+                        // Todos los demás endpoints requieren autenticación
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

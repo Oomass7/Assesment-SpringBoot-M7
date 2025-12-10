@@ -2,35 +2,53 @@ package com.example.authservice.infrastructure.adapter.security;
 
 import com.example.authservice.application.port.out.TokenGeneratorPort;
 import com.example.authservice.domain.model.TokenAuth;
-import com.example.authservice.domain.model.Usuario;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Base64;
-import java.util.UUID;
+import java.util.Collections;
 
 /**
- * Adaptador para generación de tokens
- * NOTA: En producción se debe usar JWT con firma y validación
+ * Adapter for generating real JWT tokens
  */
 @Component
 public class TokenGeneratorAdapter implements TokenGeneratorPort {
 
-    @Override
-    public TokenAuth generar(Usuario usuario) {
-        // Generar token simple (en producción usar JWT)
-        String token = Base64.getEncoder().encodeToString(
-            (usuario.getEmail() + ":" + UUID.randomUUID()).getBytes()
-        );
-        
-        LocalDateTime expiracion = LocalDateTime.now().plusHours(24);
-        
-        return new TokenAuth(token, "Bearer", expiracion);
+    private final JwtService jwtService;
+
+    public TokenGeneratorAdapter(JwtService jwtService) {
+        this.jwtService = jwtService;
     }
 
     @Override
-    public boolean validar(String token) {
-        // Validación simple (en producción validar firma JWT)
-        return token != null && !token.isEmpty();
+    public TokenAuth generate(com.example.authservice.domain.model.User user) {
+        // Create UserDetails to generate JWT
+        UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
+                .username(user.getEmail())
+                .password(user.getPassword())
+                .authorities(Collections.singletonList(
+                        new SimpleGrantedAuthority("ROLE_" + user.getRole())
+                ))
+                .build();
+
+        // Generate real JWT token with signature
+        String token = jwtService.generateToken(userDetails);
+        
+        // Expiration is 24 hours (configured in JwtService)
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
+        
+        return new TokenAuth(token, "Bearer", expiresAt);
+    }
+
+    @Override
+    public boolean validate(String token) {
+        try {
+            // Extract email from token to validate
+            String email = jwtService.extractUsername(token);
+            return email != null && !email.isEmpty();
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

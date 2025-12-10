@@ -1,7 +1,7 @@
 package com.example.coreservice.infrastructure.adapter.http;
 
 import com.example.coreservice.application.port.out.RiskServicePort;
-import com.example.coreservice.domain.model.EvaluacionRiesgo;
+import com.example.coreservice.domain.model.RiskEvaluation;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -25,23 +25,23 @@ public class RiskServiceAdapter implements RiskServicePort {
     }
 
     @Override
-    public EvaluacionRiesgo evaluar(String documento, Double monto, Integer plazo) {
+    public RiskEvaluation evaluate(String document, Double amount, Integer term) {
         try {
             String url = riskServiceUrl + "/evaluate";
             
             Map<String, Object> request = new HashMap<>();
-            request.put("documento", documento);
-            request.put("monto", monto);
-            request.put("plazo", plazo);
+            request.put("document", document);
+            request.put("amount", amount);
+            request.put("term", term);
             
             @SuppressWarnings("unchecked")
             Map<String, Object> response = restTemplate.postForObject(url, request, Map.class);
             
             if (response != null) {
-                return new EvaluacionRiesgo(
-                    String.valueOf(response.get("documento")),
+                return new RiskEvaluation(
+                    String.valueOf(response.get("document")),
                     (Integer) response.get("score"),
-                    (String) response.get("nivelRiesgo")
+                    (String) response.get("riskLevel")
                 );
             }
             

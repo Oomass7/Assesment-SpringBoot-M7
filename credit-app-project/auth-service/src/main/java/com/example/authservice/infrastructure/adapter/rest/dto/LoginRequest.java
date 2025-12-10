@@ -1,7 +1,7 @@
 package com.example.authservice.infrastructure.adapter.rest.dto;
 
 /**
- * DTO para solicitud de login
+ * DTO para request de login
  */
 public class LoginRequest {
     private String email;

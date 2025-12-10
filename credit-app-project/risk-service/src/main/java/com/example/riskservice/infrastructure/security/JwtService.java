@@ -11,7 +11,7 @@ import java.util.Date;
 import java.util.function.Function;
 
 /**
- * Servicio JWT para validación de tokens en risk-service
+ * JWT Service for token validation in risk-service
  */
 @Service
 public class JwtService {
@@ -21,6 +21,12 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public String extractRole(String token) {
+        Claims claims = extractAllClaims(token);
+        String role = claims.get("role", String.class);
+        return role != null ? role : "AFILIADO";
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {

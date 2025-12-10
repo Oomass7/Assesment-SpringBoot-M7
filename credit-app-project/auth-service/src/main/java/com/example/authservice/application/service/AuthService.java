@@ -1,72 +1,81 @@
 package com.example.authservice.application.service;
 
-import com.example.authservice.application.port.in.AutenticarUsuarioUseCase;
-import com.example.authservice.application.port.in.RegistrarUsuarioUseCase;
-import com.example.authservice.application.port.out.EncriptacionPort;
+import com.example.authservice.application.port.in.AuthenticateUserUseCase;
+import com.example.authservice.application.port.in.RegisterUserUseCase;
+import com.example.authservice.application.port.out.EncryptionPort;
 import com.example.authservice.application.port.out.TokenGeneratorPort;
-import com.example.authservice.application.port.out.UsuarioRepositoryPort;
-import com.example.authservice.domain.exception.CredencialesInvalidasException;
-import com.example.authservice.domain.exception.UsuarioNoEncontradoException;
+import com.example.authservice.application.port.out.UserRepositoryPort;
+import com.example.authservice.domain.exception.InvalidCredentialsException;
+import com.example.authservice.domain.exception.UserNotFoundException;
+import com.example.authservice.domain.model.Role;
 import com.example.authservice.domain.model.TokenAuth;
-import com.example.authservice.domain.model.Usuario;
+import com.example.authservice.domain.model.User;
 import org.springframework.stereotype.Service;
 
 /**
- * Servicio de aplicación que implementa los casos de uso
- * Esta es la capa de aplicación en arquitectura hexagonal
+ * Application service implementing use cases
+ * This is the application layer in hexagonal architecture
  */
 @Service
-public class AuthService implements RegistrarUsuarioUseCase, AutenticarUsuarioUseCase {
+public class AuthService implements RegisterUserUseCase, AuthenticateUserUseCase {
 
-    private final UsuarioRepositoryPort usuarioRepository;
-    private final EncriptacionPort encriptacion;
+    private final UserRepositoryPort userRepository;
+    private final EncryptionPort encryption;
     private final TokenGeneratorPort tokenGenerator;
 
     public AuthService(
-            UsuarioRepositoryPort usuarioRepository,
-            EncriptacionPort encriptacion,
+            UserRepositoryPort userRepository,
+            EncryptionPort encryption,
             TokenGeneratorPort tokenGenerator) {
-        this.usuarioRepository = usuarioRepository;
-        this.encriptacion = encriptacion;
+        this.userRepository = userRepository;
+        this.encryption = encryption;
         this.tokenGenerator = tokenGenerator;
     }
 
     @Override
-    public Usuario registrar(Usuario usuario) {
-        // Validaciones de negocio
-        if (!usuario.esValido()) {
-            throw new IllegalArgumentException("Datos de usuario inválidos");
+    public User register(User user) {
+        // Business validations
+        if (!user.isValid()) {
+            throw new IllegalArgumentException("Invalid user data");
         }
 
-        if (usuarioRepository.existePorEmail(usuario.getEmail())) {
-            throw new IllegalArgumentException("El email ya está registrado");
+        if (userRepository.existsByEmail(user.getEmail())) {
+            throw new IllegalArgumentException("Email is already registered");
         }
 
-        // Encriptar contraseña
-        String passwordEncriptada = encriptacion.encriptar(usuario.getPassword());
-        usuario.setPassword(passwordEncriptada);
+        // Validate role
+        if (!Role.isValid(user.getRole())) {
+            throw new IllegalArgumentException("Invalid role. Valid roles are: AFILIADO, ANALISTA, ADMIN");
+        }
 
-        // Guardar usuario
-        return usuarioRepository.guardar(usuario);
+        // Normalize role to uppercase
+        user.setRole(user.getRole().toUpperCase());
+
+        // Encrypt password
+        String encryptedPassword = encryption.encrypt(user.getPassword());
+        user.setPassword(encryptedPassword);
+
+        // Save user
+        return userRepository.save(user);
     }
 
     @Override
-    public TokenAuth autenticar(String email, String password) {
-        // Buscar usuario
-        Usuario usuario = usuarioRepository.buscarPorEmail(email)
-                .orElseThrow(() -> new UsuarioNoEncontradoException("Usuario no encontrado"));
+    public TokenAuth authenticate(String email, String password) {
+        // Find user
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
 
-        // Verificar contraseña
-        if (!encriptacion.verificar(password, usuario.getPassword())) {
-            throw new CredencialesInvalidasException("Credenciales inválidas");
+        // Verify password
+        if (!encryption.verify(password, user.getPassword())) {
+            throw new InvalidCredentialsException("Invalid credentials");
         }
 
-        // Verificar que el usuario esté activo
-        if (!usuario.isActivo()) {
-            throw new CredencialesInvalidasException("Usuario inactivo");
+        // Verify user is active
+        if (!user.isActive()) {
+            throw new InvalidCredentialsException("User is inactive");
         }
 
-        // Generar token
-        return tokenGenerator.generar(usuario);
+        // Generate token
+        return tokenGenerator.generate(user);
     }
 }

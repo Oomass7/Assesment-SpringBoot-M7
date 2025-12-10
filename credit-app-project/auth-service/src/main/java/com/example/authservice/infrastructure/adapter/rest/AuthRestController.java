@@ -1,12 +1,12 @@
 package com.example.authservice.infrastructure.adapter.rest;
 
-import com.example.authservice.application.port.in.AutenticarUsuarioUseCase;
-import com.example.authservice.application.port.in.RegistrarUsuarioUseCase;
+import com.example.authservice.application.port.in.AuthenticateUserUseCase;
+import com.example.authservice.application.port.in.RegisterUserUseCase;
 import com.example.authservice.domain.model.TokenAuth;
-import com.example.authservice.domain.model.Usuario;
+import com.example.authservice.domain.model.User;
 import com.example.authservice.infrastructure.adapter.rest.dto.AuthResponse;
 import com.example.authservice.infrastructure.adapter.rest.dto.LoginRequest;
-import com.example.authservice.infrastructure.adapter.rest.dto.RegistroRequest;
+import com.example.authservice.infrastructure.adapter.rest.dto.RegisterRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,34 +19,34 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/auth")
 public class AuthRestController {
 
-    private final RegistrarUsuarioUseCase registrarUsuarioUseCase;
-    private final AutenticarUsuarioUseCase autenticarUsuarioUseCase;
+    private final RegisterUserUseCase registrarUsuarioUseCase;
+    private final AuthenticateUserUseCase autenticarUsuarioUseCase;
 
     public AuthRestController(
-            RegistrarUsuarioUseCase registrarUsuarioUseCase,
-            AutenticarUsuarioUseCase autenticarUsuarioUseCase) {
+            RegisterUserUseCase registrarUsuarioUseCase,
+            AuthenticateUserUseCase autenticarUsuarioUseCase) {
         this.registrarUsuarioUseCase = registrarUsuarioUseCase;
         this.autenticarUsuarioUseCase = autenticarUsuarioUseCase;
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registrar(@RequestBody RegistroRequest request) {
+    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
         // Convertir DTO a modelo de dominio
-        Usuario usuario = new Usuario(
+        User user = new User(
             request.getEmail(),
             request.getPassword(),
-            request.getNombre(),
-            request.getRol()
+            request.getName(),
+            request.getRole()
         );
 
         // Ejecutar caso de uso
-        Usuario usuarioRegistrado = registrarUsuarioUseCase.registrar(usuario);
+        User userRegistrado = registrarUsuarioUseCase.register(user);
 
         // Responder
         AuthResponse response = new AuthResponse(
             null,
             null,
-            "Usuario registrado exitosamente con ID: " + usuarioRegistrado.getId()
+            "User registrado exitosamente con ID: " + userRegistrado.getId()
         );
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
@@ -55,7 +55,7 @@ public class AuthRestController {
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
         // Ejecutar caso de uso
-        TokenAuth token = autenticarUsuarioUseCase.autenticar(
+        TokenAuth token = autenticarUsuarioUseCase.authenticate(
             request.getEmail(),
             request.getPassword()
         );
@@ -63,7 +63,7 @@ public class AuthRestController {
         // Responder
         AuthResponse response = new AuthResponse(
             token.getToken(),
-            token.getTipo(),
+            token.getType(),
             "Autenticación exitosa"
         );
 

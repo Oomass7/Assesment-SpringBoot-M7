@@ -1,6 +1,6 @@
 package com.example.coreservice.infrastructure.config;
 
-import com.example.coreservice.domain.exception.SolicitudNoEncontradaException;
+import com.example.coreservice.domain.exception.RequestNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -15,8 +15,8 @@ import java.util.Map;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    @ExceptionHandler(SolicitudNoEncontradaException.class)
-    public ResponseEntity<Map<String, String>> handleSolicitudNoEncontrada(SolicitudNoEncontradaException ex) {
+    @ExceptionHandler(RequestNotFoundException.class)
+    public ResponseEntity<Map<String, String>> handleSolicitudNoEncontrada(RequestNotFoundException ex) {
         Map<String, String> error = new HashMap<>();
         error.put("error", ex.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(error);
